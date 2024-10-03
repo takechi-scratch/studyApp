@@ -3,19 +3,20 @@ import SvgColor from 'src/components/svg-color';
 // ----------------------------------------------------------------------
 
 const icon = (name) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+    // <SvgColor icon_name={name} />
+    <SvgColor src={name} sx={{ width: 1, height: 1 }} />
 );
 
 const navConfig = [
   {
     title: 'ホーム',
     path: '/',
-    icon: icon('ic_analytics'),
+    icon: icon("house"),
   },
   {
     title: '問題一覧',
     path: '/questions',
-    icon: icon('ic_blog'),
+    icon: icon('card-checklist'),
   },
   {
     title: 'user',
@@ -26,16 +27,6 @@ const navConfig = [
     title: 'product',
     path: '/products',
     icon: icon('ic_cart'),
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
   },
 ];
 
