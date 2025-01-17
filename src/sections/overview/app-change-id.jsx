@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,13 +9,18 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import DatabaseContext from '../../contexts/databaseContext';
+
 // ----------------------------------------------------------------------
 
 export default function AppChangeId({icon, ...other }) {
-    const [datasetID, setDatasetID] = useState("");
+    const [inputID, setInputID] = useState("");
+    const { setDatasetID } = useContext(DatabaseContext);
     const navigate = useNavigate()
+
     const handleClick = () => {
-        console.log(datasetID);
+        setDatasetID(inputID);
+        console.log(inputID);
         navigate("/questions");
     }
 
@@ -39,7 +44,7 @@ export default function AppChangeId({icon, ...other }) {
             <TextField
                 id="outlined-basic" label="データベースID" variant="outlined"
                 onChange={e => {
-                    setDatasetID(e.target.value)
+                    setInputID(e.target.value)
                 }}
             />
             <Button variant="outlined" onClick={handleClick}>読み込み</Button>

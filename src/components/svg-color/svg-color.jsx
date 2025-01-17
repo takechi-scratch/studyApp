@@ -3,7 +3,6 @@ import { forwardRef } from 'react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 
 // ----------------------------------------------------------------------
 
