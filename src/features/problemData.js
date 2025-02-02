@@ -11,10 +11,11 @@ export const fetchProblemData = async (problemId) => {
         throw new Error("Invalid ID");
     }
 
+    let gasID;
     if (problemId.startsWith("official.")) {
         throw new Error("Official problem data is not supported yet");
     } else {
-        const gasID = problemId.replace("custom.", "");
+        gasID = problemId.replace("custom.", "");
     }
 
     try {
