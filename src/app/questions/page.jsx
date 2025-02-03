@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Header from "../../components/header";
@@ -20,7 +21,9 @@ export default function Main() {
             <Header />
             <main className="flex flex-col justify-between p-24">
                 <h1 className="text-4xl font-bold">問題</h1>
-                {Questions()}
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Questions />
+                </Suspense>
             </main>
         </div>
     );

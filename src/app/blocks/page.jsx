@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
@@ -55,7 +56,9 @@ export default function Home() {
             <Header />
             <main className="flex flex-col justify-between p-24">
                 <h1 className="text-4xl font-bold">問題一覧</h1>
-                {Blocks()}
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Blocks />
+                </Suspense>
             </main>
         </div>
     );
