@@ -26,17 +26,35 @@ const fetchGAS = async (method = "GET", gasID, query) => {
     }
 
     try {
+        console.log(`${url}?${params}`);
         const response = await fetch(`${url}?${params}`, {method: method});
         if (!response.ok || !response.headers.get("Content-Type").startsWith("application/json")) {
-            throw new Error("レスポンスエラー");
+            throw new Error("GASエラー");
         }
 
-        const data = await response.json();
-        return data;
+        const rawData = await response.json();
+
+        if (rawData.status !== "OK") {
+            throw new Error(rawData.status);
+        }
+
+        return rawData.data;
     } catch (error) {
         console.error("Fetch error:", error);
         throw error;
     }
+};
+
+const parseDatabaseID = (databaseID) => {
+    let gasID;
+    let type;
+    if (databaseID.startsWith("official.")) {
+        throw new Error("公式データは未対応です");
+    } else {
+        gasID = databaseID.replace("custom.", "");
+        type = "custom";
+    }
+    return [gasID, type];
 };
 
 export const fetchBlockIndex = async (databaseID) => {
@@ -44,12 +62,7 @@ export const fetchBlockIndex = async (databaseID) => {
         throw new Error("正しいデータベースIDを入力してください");
     }
 
-    let gasID;
-    if (databaseID.startsWith("official.")) {
-        throw new Error("公式データは未対応です");
-    } else {
-        gasID = databaseID.replace("custom.", "");
-    }
+    let [gasID, type] = parseDatabaseID(databaseID);
 
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("blockIndex")) || {};
@@ -83,23 +96,18 @@ export const fetchBlockIndex = async (databaseID) => {
 };
 
 
-export const fetchQuestions = async (databaseID) => {
-    if (!isIdValid(databaseID)) {
-        throw new Error("データベースIDの形式が不正です");
+export const fetchQuestions = async (databaseID = "", blockID) => {
+    if (databaseID === "") {
+        databaseID = currentDatabaseID;
     }
 
-    let gasID;
-    if (databaseID.startsWith("official.")) {
-        throw new Error("公式データは未対応です");
-    } else {
-        gasID = databaseID.replace("custom.", "");
-    }
+    let [gasID, type] = parseDatabaseID(databaseID);
 
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("questions")) || {};
 
-    if (Object.keys(storage).includes(gasID)) {
-        const rawData = storage.gasID;
+    if (Object.keys(storage).includes(`${gasID}.${blockID}`)) {
+        const rawData = storage[`${gasID}.${blockID}`];
 
         // キャッシュが1時間以内の場合はキャッシュを返す
         if (Date.now() - rawData.timestamp < 3600000) {
@@ -109,15 +117,16 @@ export const fetchQuestions = async (databaseID) => {
 
     let response;
     try {
-        response = await fetchGAS("GET", gasID, {type: "getQuestions"});
+        response = await fetchGAS("GET", gasID, {type: "getQuestions", questionsID: blockID});
     } catch (error) {
         console.error("Fetch error:", error);
         throw error;
     }
 
     // ローカルストレージに保存
-    storage[gasID] = {timestamp: Date.now(), questions: response};
+    storage[`${gasID}.${blockID}`] = {timestamp: Date.now(), questions: response};
     localStorage.setItem("questions", JSON.stringify(storage));
 
+    console.log(response);
     return response;
 };
