@@ -72,8 +72,8 @@ export const fetchBlockIndex = async (databaseID) => {
         console.log(storage[gasID]);
         const rawData = storage[gasID];
 
-        // キャッシュが1時間以内の場合はキャッシュを返す
-        if (Date.now() - rawData.timestamp < 3600000) {
+        // キャッシュが12時間以内の場合はキャッシュを返す
+        if (Date.now() - rawData.timestamp < 12 * 3600 * 1000) {
             currentBlocks = rawData.blocks;
             return rawData.blocks;
         }
@@ -109,8 +109,8 @@ export const fetchQuestions = async (databaseID = "", blockID) => {
     if (Object.keys(storage).includes(`${gasID}.${blockID}`)) {
         const rawData = storage[`${gasID}.${blockID}`];
 
-        // キャッシュが1時間以内の場合はキャッシュを返す
-        if (Date.now() - rawData.timestamp < 3600000) {
+        // キャッシュが12時間以内の場合はキャッシュを返す
+        if (Date.now() - rawData.timestamp < 12 * 3600 * 1000) {
             return rawData.questions;
         }
     }
