@@ -17,7 +17,7 @@ function Blocks() {
     };
 
     if (currentDatabaseID === "") {
-        window.location.href = "/";
+        router.push("/");
         return (
             <p className="text-xl">データベースIDを入力してください</p>
         );
@@ -52,14 +52,17 @@ function Blocks() {
 
 
 export default function Home() {
+    const router = useRouter();
+
     return (
         <div className="flex flex-col min-h-screen lg:px-8">
             <Header />
-            <main className="flex flex-col justify-between p-24">
+            <main className="flex flex-col justify-between p-24 gap-8">
                 <h1 className="text-4xl font-bold">問題一覧</h1>
                 <Suspense fallback={<div>読み込み中...</div>}>
                     <Blocks />
                 </Suspense>
+                <button className="px-8 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 self-start" onClick={() => router.push("/")}>ホームへ</button>
             </main>
         </div>
     );

@@ -9,7 +9,7 @@ import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
 const Questions = () => {
     const searchParams = useSearchParams();
     const blockID = searchParams.get("blockID");
-    const [questions, setQuestions] = useState([]);
+    const [questions, setQuestions] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
 
@@ -33,8 +33,12 @@ const Questions = () => {
         setShowAnswer(false);
     };
 
+    if (!questions) {
+        return <p>読み込み中...</p>;
+    }
+
     if (questions.length === 0) {
-        return <p>Loading...</p>;
+        return <p className="text-xl">問題がありません。</p>;
     }
 
     const currentQuestion = questions[currentQuestionIndex];
@@ -42,7 +46,7 @@ const Questions = () => {
     return (
         <div className="p-4 bg-white rounded shadow-md">
             <p className="text-lg font-semibold mb-2">ID: {currentQuestion.id}</p>
-            <div className="cursor-pointer mb-4">
+            <div className="cursor-pointer mb-4 min-h-24 lg:min-h-8">
                 <p className="text-xl">{currentQuestion.question}</p>
             </div>
             <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={handleToggleAnswer}>
