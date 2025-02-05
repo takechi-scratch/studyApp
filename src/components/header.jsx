@@ -48,7 +48,7 @@ export default function Header() {
             <span className="sr-only">アプリアイコン</span>
             <img
               alt=""
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+              src="../../public/icon.png"
               className="h-8 w-auto"
             />
           </Link>

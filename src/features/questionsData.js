@@ -29,7 +29,7 @@ const fetchGAS = async (method = "GET", gasID, query) => {
         console.log(`${url}?${params}`);
         const response = await fetch(`${url}?${params}`, {method: method});
         if (!response.ok || !response.headers.get("Content-Type").startsWith("application/json")) {
-            throw new Error("GASエラー");
+            throw new Error("GoogleAppsScriptにてエラーが発生しました");
         }
 
         const rawData = await response.json();
@@ -68,7 +68,7 @@ export const fetchBlockIndex = async (databaseID) => {
     const storage = JSON.parse(localStorage.getItem("blockIndex")) || {};
 
     if (Object.keys(storage).includes(gasID)) {
-        console.log("キャッシュあり");
+        console.log("Chache hit");
         console.log(storage[gasID]);
         const rawData = storage[gasID];
 
