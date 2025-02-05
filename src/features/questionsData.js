@@ -1,7 +1,7 @@
 export let currentDatabaseID = "";
 export let currentBlocks = [];
 
-export const changeDatabaseID = (id) => {
+export const changeDatabaseID =　async (id) => {
     if (!isIdValid(id)) {
         throw new Error("データベースIDの形式が不正です");
     }

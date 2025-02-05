@@ -44,12 +44,12 @@ export default function Home() {
                     <button className="p-2 bg-blue-500 text-white rounded-md" onClick={handleFetchData}>
                         挑戦！
                     </button>
+                    {errorMessage && (
+                            <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
+                                {errorMessage}
+                            </div>
+                        )}
                 </div>
-                {errorMessage && (
-                        <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
-                            {errorMessage}
-                        </div>
-                    )}
             </main>
         </div>
 
