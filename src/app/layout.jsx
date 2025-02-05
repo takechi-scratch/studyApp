@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-    title: "テスト対策アプリ",
+    title: "My Study",
     description: "現在作成中です",
 };
 

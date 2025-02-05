@@ -17,6 +17,7 @@ function Blocks() {
     };
 
     if (currentDatabaseID === "") {
+        window.location.href = "/";
         return (
             <p className="text-xl">データベースIDを入力してください</p>
         );
