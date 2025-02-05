@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
-import { currentDatabaseID, currentBlocks } from "@/features/questionsData";
+import { currentDatabaseID, currentBlocks, fetchBlockIndex } from "@/features/questionsData";
 
 function Blocks() {
     const searchParams = useSearchParams();
@@ -37,13 +37,13 @@ function Blocks() {
     // views: 0
 
     return (
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
             {currentBlocks.map((block) => (
-                        <button key={block.id} onClick={() => handleClick(block.id)} className="p-4 border border-gray-300 rounded-md text-left">                    <h2 className="text-lg font-bold">{block.title}</h2>
+                <button key={block.id} onClick={() => handleClick(block.id)} className="p-4 border border-gray-300 rounded-md text-left">
+                    <h2 className="text-lg font-bold">{block.title}</h2>
                     <p>{block.descriptions}</p>
                     <p>問題数: {block.questions}問</p>
                     <p>閲覧数: {block.views}回</p>
-
                 </button>
             ))}
         </div>
@@ -53,6 +53,10 @@ function Blocks() {
 
 export default function Home() {
     const router = useRouter();
+    const refresh = () => {
+        fetchBlockIndex(currentDatabaseID, false);
+        router.refresh();
+    };
 
     return (
         <div className="flex flex-col min-h-screen lg:px-8">
@@ -63,6 +67,7 @@ export default function Home() {
                     <Blocks />
                 </Suspense>
                 <button className="px-8 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 self-start" onClick={() => router.push("/")}>ホームへ</button>
+                <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
             </main>
         </div>
     );

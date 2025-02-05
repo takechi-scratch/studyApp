@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
 import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
@@ -61,6 +61,15 @@ const Questions = () => {
 }
 
 export default function Main() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const blockID = searchParams.get("blockID");
+
+    const refresh = () => {
+        fetchQuestions(currentDatabaseID, blockID, false);
+        router.refresh();
+    };
+
     return (
         <div className="flex flex-col min-h-screen lg:px-8">
             <Header />
@@ -70,6 +79,7 @@ export default function Main() {
                     <Questions />
                 </Suspense>
                 <button className="px-8 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 self-start" onClick={() => window.history.back()}>戻る</button>
+                <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
             </main>
         </div>
     );

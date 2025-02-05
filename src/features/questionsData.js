@@ -57,7 +57,7 @@ const parseDatabaseID = (databaseID) => {
     return [gasID, type];
 };
 
-export const fetchBlockIndex = async (databaseID) => {
+export const fetchBlockIndex = async (databaseID, useCache = true) => {
     if (!isIdValid(databaseID)) {
         throw new Error("正しいデータベースIDを入力してください");
     }
@@ -67,7 +67,7 @@ export const fetchBlockIndex = async (databaseID) => {
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("blockIndex")) || {};
 
-    if (Object.keys(storage).includes(gasID)) {
+    if (useCache && Object.keys(storage).includes(gasID)) {
         console.log("Chache hit");
         console.log(storage[gasID]);
         const rawData = storage[gasID];
@@ -96,7 +96,7 @@ export const fetchBlockIndex = async (databaseID) => {
 };
 
 
-export const fetchQuestions = async (databaseID = "", blockID) => {
+export const fetchQuestions = async (databaseID = "", blockID, useCache = true) => {
     if (databaseID === "") {
         databaseID = currentDatabaseID;
     }
@@ -106,7 +106,7 @@ export const fetchQuestions = async (databaseID = "", blockID) => {
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("questions")) || {};
 
-    if (Object.keys(storage).includes(`${gasID}.${blockID}`)) {
+    if (useCache && Object.keys(storage).includes(`${gasID}.${blockID}`)) {
         const rawData = storage[`${gasID}.${blockID}`];
 
         // キャッシュが12時間以内の場合はキャッシュを返す
