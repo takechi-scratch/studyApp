@@ -27,7 +27,7 @@ export default function Home() {
         <div className="flex flex-col min-h-screen lg:px-8">
             <Header />
             <main className="flex flex-col justify-between p-24">
-                <h1 className="text-4xl font-bold">My Study</h1>
+                <h1 className="text-4xl font-bold">テスト対策アプリ</h1>
                 <p className="text-xl">現在製作中です！ぜひ改善にご協力ください！</p>
                 <div className="flex flex-col gap-y-4 rounded p-4 bg-gray-50 max-w-sm mx-auto">
                     <div className="flex flex-col gap-y-2">
