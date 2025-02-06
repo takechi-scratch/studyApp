@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import Header from "../components/header";
 import { currentDatabaseID, changeDatabaseID } from "@/features/questionsData";
+import Message from "@/components/message";
 
 export default function Home() {
     const [databaseID, setDatabaseID] = useState(currentDatabaseID);
@@ -18,8 +19,6 @@ export default function Home() {
             router.push("/blocks");
         } catch (error) {
             setErrorMessage(error.message);
-            // エラーメッセージを3秒後に消す
-            setTimeout(() => setErrorMessage(""), 3000);
         }
     };
 
@@ -45,9 +44,7 @@ export default function Home() {
                         挑戦！
                     </button>
                     {errorMessage && (
-                            <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
-                                {errorMessage}
-                            </div>
+                            <Message text={errorMessage} className="bg-red-300" />
                         )}
                 </div>
             </main>

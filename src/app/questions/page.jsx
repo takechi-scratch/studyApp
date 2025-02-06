@@ -5,17 +5,25 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
 import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
+import Message from "@/components/message";
 
 const Questions = () => {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const blockID = searchParams.get("blockID");
+
     const [questions, setQuestions] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
+    const [message, setMessage] = useState("");
 
     const refresh = () => {
-        fetchQuestions(currentDatabaseID, blockID, false);
-        router.refresh();
+        console.log("refresh");
+        fetchQuestions(currentDatabaseID, blockID, false).then((data) => {
+            setQuestions(data);
+            console.log("refreshed");　// 出てくる
+            setMessage("データを再読み込みしました！"); // なぜか出てこない
+        });
     };
 
     useEffect(() => {
@@ -64,6 +72,7 @@ const Questions = () => {
                 </div>
             </div>
             <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
+            <Message text={message} className="bg-green-300" />
         </>
     );
 }
