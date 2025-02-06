@@ -1,10 +1,11 @@
 "use client";
 
-import { Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
 import { currentDatabaseID, currentBlocks, fetchBlockIndex } from "@/features/questionsData";
+import Message from "@/components/message";
 
 function Blocks() {
     const searchParams = useSearchParams();
@@ -53,9 +54,12 @@ function Blocks() {
 
 export default function Home() {
     const router = useRouter();
+    const [message, setMessage] = useState("");
+
     const refresh = () => {
-        fetchBlockIndex(currentDatabaseID, false);
-        router.refresh();
+        fetchBlockIndex(currentDatabaseID, false).then(() => {
+            setMessage("データを再読み込みしました！");
+        });
     };
 
     return (
@@ -68,6 +72,7 @@ export default function Home() {
                 </Suspense>
                 <button className="px-8 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 self-start" onClick={() => router.push("/")}>ホームへ</button>
                 <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
+                {message && <Message text={message} className="bg-green-300" />}
             </main>
         </div>
     );

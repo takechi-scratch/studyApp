@@ -21,8 +21,8 @@ const Questions = () => {
         console.log("refresh");
         fetchQuestions(currentDatabaseID, blockID, false).then((data) => {
             setQuestions(data);
-            console.log("refreshed");　// 出てくる
-            setMessage("データを再読み込みしました！"); // なぜか出てこない
+            console.log("refreshed");
+            setMessage("データを再読み込みしました！"); // 一度しか出てこない
         });
     };
 
@@ -72,7 +72,7 @@ const Questions = () => {
                 </div>
             </div>
             <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
-            <Message text={message} className="bg-green-300" />
+            {message && <Message text={message} className="bg-green-300" />}
         </>
     );
 }

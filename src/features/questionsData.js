@@ -38,6 +38,7 @@ const fetchGAS = async (method = "GET", gasID, query) => {
             throw new Error(rawData.status);
         }
 
+        console.log(rawData.data);
         return rawData.data;
     } catch (error) {
         console.error("Fetch error:", error);
@@ -127,6 +128,5 @@ export const fetchQuestions = async (databaseID = "", blockID, useCache = true) 
     storage[`${gasID}.${blockID}`] = {timestamp: Date.now(), questions: response};
     localStorage.setItem("questions", JSON.stringify(storage));
 
-    console.log(response);
     return response;
 };
