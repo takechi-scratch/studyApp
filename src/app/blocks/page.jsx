@@ -18,7 +18,7 @@ function Blocks() {
     };
 
     if (currentDatabaseID === "") {
-        router.push("/");
+        router.push("/"); // やっぱり、バグになるみたい
         return (
             <p className="text-xl">データベースIDを入力してください</p>
         );

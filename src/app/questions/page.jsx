@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import Header from "../../components/header";
 import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
@@ -9,7 +9,6 @@ import Message from "@/components/message";
 
 const Questions = () => {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const blockID = searchParams.get("blockID");
 
     const [questions, setQuestions] = useState(null);
@@ -18,10 +17,8 @@ const Questions = () => {
     const [message, setMessage] = useState("");
 
     const refresh = () => {
-        console.log("refresh");
         fetchQuestions(currentDatabaseID, blockID, false).then((data) => {
             setQuestions(data);
-            console.log("refreshed");
             setMessage("データを再読み込みしました！"); // 一度しか出てこない
         });
     };
