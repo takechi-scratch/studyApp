@@ -17,12 +17,20 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
     };
 
     const handleNextQuestion = () => {
-        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
-        setShowAnswer(false);
+        if (isRandom) {
+            setCurrentQuestionIndex(Math.floor(Math.random() * questions.length));
+        } else {
+            setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+        }
+            setShowAnswer(false);
     };
 
     const handlePrevQuestion = () => {
-        setCurrentQuestionIndex((prevIndex) => (prevIndex - 1 + questions.length) % questions.length);
+        if (isRandom) {
+            setCurrentQuestionIndex(Math.floor(Math.random() * questions.length));
+        } else {
+            setCurrentQuestionIndex((prevIndex) => (prevIndex - 1 + questions.length) % questions.length);
+        }
         setShowAnswer(false);
     };
 
