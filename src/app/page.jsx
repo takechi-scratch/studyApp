@@ -56,6 +56,7 @@ export default function Home() {
                     <button className="p-2 bg-blue-500 text-white rounded-md" onClick={handleFetchData}>
                         挑戦！
                     </button>
+                    <a href="/make">問題を作成する</a>
                 </div>
                 {errorMessage && (
                     <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
