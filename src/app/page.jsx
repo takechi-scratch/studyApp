@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // app routerを使うときはこっち！！
 import { useRouter } from 'next/navigation';
 
@@ -12,9 +12,21 @@ export default function Home() {
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const savedDatabaseID = localStorage.getItem("databaseID");
+            if (savedDatabaseID) {
+                setDatabaseID(savedDatabaseID);
+            }
+        }
+    }, []);
+
     const handleFetchData = async () => {
         try {
             await changeDatabaseID(databaseID);
+            if (typeof window !== "undefined") {
+                localStorage.setItem("databaseID", databaseID);
+            }
             router.push("/blocks");
         } catch (error) {
             setErrorMessage(error.message);
@@ -46,13 +58,11 @@ export default function Home() {
                     </button>
                 </div>
                 {errorMessage && (
-                        <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
-                            {errorMessage}
-                        </div>
-                    )}
+                    <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
+                        {errorMessage}
+                    </div>
+                )}
             </main>
         </div>
-
-
     );
 }
