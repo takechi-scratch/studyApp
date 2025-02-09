@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef, use } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 
 import Header from "../../components/header";
 import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
@@ -10,6 +10,7 @@ import Message from "@/components/message";
 const Questions = ({questions, isRandom, includesFeedback}) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
+    const [showIDSelector, setShowIDSelector] = useState(false);
 
     const handleToggleAnswer = () => {
         setShowAnswer(!showAnswer);
@@ -36,26 +37,50 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
         }
     }
 
+    const inputRef = useRef(null);
+
     return (
-        <>
-            <div className="p-4 bg-white rounded shadow-md">
-                <p className="text-lg font-semibold mb-2">ID: {currentQuestion.id}</p>
-                <div className="cursor-pointer mb-4 min-h-24 lg:min-h-8">
-                    <p className="text-xl">{currentQuestion.question}</p>
+        <div className="p-4 bg-white rounded shadow-md relative z-10">
+            <p className="text-lg font-semibold mb-2 cursor-pointer" onClick={() => setShowIDSelector(true)}>ID: {currentQuestion.id}</p>
+            {showIDSelector && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
+                    <div className="bg-white border border-gray-300 rounded shadow-md p-4">
+                        <input
+                            type="text"
+                            className="border p-2 mb-4 w-full"
+                            placeholder="IDを入力"
+                            ref={inputRef}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    const index = questions.findIndex(q => String(q.id) === e.target.value);
+                                    setShowIDSelector(false);
+                                    if (index !== -1) {
+                                        setCurrentQuestionIndex(index);
+                                        setShowAnswer(false);
+                                    }
+                                }
+                            }}
+                        />
+                        <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700" onClick={() => setShowIDSelector(false)}>閉じる</button>
+                    </div>
                 </div>
-                <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={handleToggleAnswer}>
-                    <p className={`${showAnswer && "text-green-600"} p-1`}>{answer}</p>
-                </button>
-                <div className="flex justify-between space-x-4 mt-4">
-                    <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handlePrevQuestion}>前の問題</button>
-                    <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handleNextQuestion}>次の問題</button>
-                </div>
+            )}
+
+            <div className="cursor-pointer mb-4 min-h-24 lg:min-h-8">
+                <p className="text-xl">{currentQuestion.question}</p>
             </div>
-        </>
+            <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={handleToggleAnswer}>
+                <p className={`${showAnswer && "text-green-600"} p-1`}>{answer}</p>
+            </button>
+            <div className="flex justify-between space-x-4 mt-4">
+                <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handlePrevQuestion}>前の問題</button>
+                <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handleNextQuestion}>次の問題</button>
+            </div>
+        </div>
     );
 }
 
-const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback}) => {
+const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback, setQuestions}) => {
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
@@ -81,28 +106,28 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback}
     return (
         <div className="relative">
             <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={toggleMenu}>
-                設定
+                <p>設定</p>
+                {isOpen && (
+                    <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <ul>
+                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                <label>
+                                    <input type="checkbox" checked={isRandom} onChange={handleToggleRandom} />
+                                    ランダム
+                                </label>
+                            </li>
+                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                <label>
+                                    <input type="checkbox" checked={includesFeedback} onChange={handleToggleFeedback} />
+                                    フィードバックを含む
+                                </label>
+                            </li>
+                        </ul>
+                        <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={refresh}>キャッシュなしで再読み込み</button>
+                    </div>
+                )}
             </button>
-            {isOpen && (
-                <div className="absolute mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
-                    <ul>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            <label>
-                                <input type="checkbox" checked={isRandom} onChange={handleToggleRandom} />
-                                ランダム
-                            </label>
-                        </li>
-                        <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                            <label>
-                                <input type="checkbox" checked={includesFeedback} onChange={handleToggleFeedback} />
-                                フィードバックを含む
-                            </label>
-                        </li>
-                    </ul>
-                    <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
-                    {message && <Message text={message} className="bg-green-300" />}
-                </div>
-            )}
+            {message && <Message text={message} className="bg-green-300" />}
         </div>
     );
 }
@@ -133,7 +158,7 @@ const Root = () => {
     return (
         <>
             <Questions questions={questions} isRandom={isRandom} includesFeedback={includesFeedback} />
-            <Settings isRandom={isRandom} setIsRandom={setIsRandom} includesFeedback={includesFeedback} setIncludesFeedback={setIncludesFeedback} />
+            <Settings isRandom={isRandom} setIsRandom={setIsRandom} includesFeedback={includesFeedback} setIncludesFeedback={setIncludesFeedback} setQuestions={setQuestions} />
         </>
     );
 }
