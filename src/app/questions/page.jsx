@@ -113,7 +113,7 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
 
     return (
         <div className="relative">
-            <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={toggleMenu}>
+            <div className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={toggleMenu} role="button" tabIndex="0">
                 <p>設定</p>
                 {isOpen && (
                     <div className="flex flex-col" onClick={(e) => e.stopPropagation()}>
@@ -134,7 +134,7 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
                         <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={refresh}>キャッシュなしで再読み込み</button>
                     </div>
                 )}
-            </button>
+            </div>
             {message && <Message text={message} className="bg-green-300" />}
         </div>
     );
