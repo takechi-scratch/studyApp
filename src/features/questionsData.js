@@ -1,7 +1,7 @@
 export let currentDatabaseID = "";
 export let currentBlocks = [];
 
-export const changeDatabaseID = (id) => {
+export const changeDatabaseID =　async (id) => {
     if (!isIdValid(id)) {
         throw new Error("データベースIDの形式が不正です");
     }
@@ -38,6 +38,7 @@ const fetchGAS = async (method = "GET", gasID, query) => {
             throw new Error(rawData.status);
         }
 
+        console.log(rawData.data);
         return rawData.data;
     } catch (error) {
         console.error("Fetch error:", error);
@@ -57,7 +58,7 @@ const parseDatabaseID = (databaseID) => {
     return [gasID, type];
 };
 
-export const fetchBlockIndex = async (databaseID) => {
+export const fetchBlockIndex = async (databaseID, useCache = true) => {
     if (!isIdValid(databaseID)) {
         throw new Error("正しいデータベースIDを入力してください");
     }
@@ -67,13 +68,13 @@ export const fetchBlockIndex = async (databaseID) => {
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("blockIndex")) || {};
 
-    if (Object.keys(storage).includes(gasID)) {
+    if (useCache && Object.keys(storage).includes(gasID)) {
         console.log("Chache hit");
         console.log(storage[gasID]);
         const rawData = storage[gasID];
 
-        // キャッシュが1時間以内の場合はキャッシュを返す
-        if (Date.now() - rawData.timestamp < 3600000) {
+        // キャッシュが12時間以内の場合はキャッシュを返す
+        if (Date.now() - rawData.timestamp < 12 * 3600 * 1000) {
             currentBlocks = rawData.blocks;
             return rawData.blocks;
         }
@@ -96,7 +97,7 @@ export const fetchBlockIndex = async (databaseID) => {
 };
 
 
-export const fetchQuestions = async (databaseID = "", blockID) => {
+export const fetchQuestions = async (databaseID = "", blockID, useCache = true) => {
     if (databaseID === "") {
         databaseID = currentDatabaseID;
     }
@@ -106,11 +107,11 @@ export const fetchQuestions = async (databaseID = "", blockID) => {
     // ローカルストレージを取得
     const storage = JSON.parse(localStorage.getItem("questions")) || {};
 
-    if (Object.keys(storage).includes(`${gasID}.${blockID}`)) {
+    if (useCache && Object.keys(storage).includes(`${gasID}.${blockID}`)) {
         const rawData = storage[`${gasID}.${blockID}`];
 
-        // キャッシュが1時間以内の場合はキャッシュを返す
-        if (Date.now() - rawData.timestamp < 3600000) {
+        // キャッシュが12時間以内の場合はキャッシュを返す
+        if (Date.now() - rawData.timestamp < 12 * 3600 * 1000) {
             return rawData.questions;
         }
     }
@@ -127,6 +128,5 @@ export const fetchQuestions = async (databaseID = "", blockID) => {
     storage[`${gasID}.${blockID}`] = {timestamp: Date.now(), questions: response};
     localStorage.setItem("questions", JSON.stringify(storage));
 
-    console.log(response);
     return response;
 };

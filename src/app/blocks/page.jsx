@@ -1,10 +1,11 @@
 "use client";
 
-import { Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import Header from "../../components/header";
-import { currentDatabaseID, currentBlocks } from "@/features/questionsData";
+import { currentDatabaseID, currentBlocks, fetchBlockIndex } from "@/features/questionsData";
+import Message from "@/components/message";
 
 function Blocks() {
     const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ function Blocks() {
     };
 
     if (currentDatabaseID === "") {
-        window.location.href = "/";
+        router.push("/"); // やっぱり、バグになるみたい
         return (
             <p className="text-xl">データベースIDを入力してください</p>
         );
@@ -37,13 +38,13 @@ function Blocks() {
     // views: 0
 
     return (
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
             {currentBlocks.map((block) => (
-                        <button key={block.id} onClick={() => handleClick(block.id)} className="p-4 border border-gray-300 rounded-md text-left">                    <h2 className="text-lg font-bold">{block.title}</h2>
+                <button key={block.id} onClick={() => handleClick(block.id)} className="p-4 border border-gray-300 rounded-md text-left">
+                    <h2 className="text-lg font-bold">{block.title}</h2>
                     <p>{block.descriptions}</p>
                     <p>問題数: {block.questions}問</p>
                     <p>閲覧数: {block.views}回</p>
-
                 </button>
             ))}
         </div>
@@ -52,14 +53,26 @@ function Blocks() {
 
 
 export default function Home() {
+    const router = useRouter();
+    const [message, setMessage] = useState("");
+
+    const refresh = () => {
+        fetchBlockIndex(currentDatabaseID, false).then(() => {
+            setMessage("データを再読み込みしました！");
+        });
+    };
+
     return (
         <div className="flex flex-col min-h-screen lg:px-8">
             <Header />
-            <main className="flex flex-col justify-between p-24">
+            <main className="flex flex-col justify-between p-24 gap-8">
                 <h1 className="text-4xl font-bold">問題一覧</h1>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<div>読み込み中...</div>}>
                     <Blocks />
                 </Suspense>
+                <button className="px-8 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 self-start" onClick={() => router.push("/")}>ホームへ</button>
+                <button className="px-8 py-2 bg-red-500 text-white rounded hover:bg-red-700 self-start" onClick={() => refresh()}>キャッシュなしで再読み込み</button>
+                {message && <Message text={message} className="bg-green-300" />}
             </main>
         </div>
     );
