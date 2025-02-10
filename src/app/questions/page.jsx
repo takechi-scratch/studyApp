@@ -88,7 +88,7 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
     );
 }
 
-const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback, setQuestions}) => {
+const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback, setQuestions, blockID}) => {
     const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
@@ -166,7 +166,7 @@ const Root = () => {
     return (
         <>
             <Questions questions={questions} isRandom={isRandom} includesFeedback={includesFeedback} />
-            <Settings isRandom={isRandom} setIsRandom={setIsRandom} includesFeedback={includesFeedback} setIncludesFeedback={setIncludesFeedback} setQuestions={setQuestions} />
+            <Settings isRandom={isRandom} setIsRandom={setIsRandom} includesFeedback={includesFeedback} setIncludesFeedback={setIncludesFeedback} setQuestions={setQuestions} blockID={blockID} />
         </>
     );
 }
