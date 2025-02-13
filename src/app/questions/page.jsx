@@ -36,15 +36,6 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
 
     const currentQuestion = questions[currentQuestionIndex];
 
-    let answer = "答えを表示";
-    if (showAnswer) {
-        if (includesFeedback) {
-            answer = `${currentQuestion.answer}\n${currentQuestion.feedback}`;
-        } else {
-            answer = currentQuestion.answer;
-        }
-    }
-
     const inputRef = useRef(null);
 
     return (
@@ -74,12 +65,15 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
                 </div>
             )}
 
-            <div className="cursor-pointer mb-4 min-h-24 lg:min-h-8">
-                <p className="text-xl">{currentQuestion.question}</p>
+            <div className="flex flex-col min-h-44 lg:min-h-8">
+                <p className="text-xl mb-4">{currentQuestion.question}</p>
+                <div className="flex-grow"></div>
+                <button className="flex-end p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={handleToggleAnswer}>
+                    {!showAnswer && <p className="p-1">答えを表示</p>}
+                    {showAnswer && <p className="text-green-600 p-1">{currentQuestion.answer}</p>}
+                    {(showAnswer && includesFeedback) && <p className="text-gray-500 p-1">{currentQuestion.feedback || "（解説なし）"}</p>}
+                </button>
             </div>
-            <button className="p-4 border border-gray-300 rounded-md text-left hover:bg-gray-50 w-full" onClick={handleToggleAnswer}>
-                <p className={`${showAnswer && "text-green-600"} p-1`}>{answer}</p>
-            </button>
             <div className="flex justify-between space-x-4 mt-4">
                 <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handlePrevQuestion}>前の問題</button>
                 <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={handleNextQuestion}>次の問題</button>
@@ -127,7 +121,7 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
                             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                                 <label>
                                     <input type="checkbox" checked={includesFeedback} onChange={handleToggleFeedback} />
-                                    フィードバックを含む
+                                    解説を表示する
                                 </label>
                             </li>
                         </ul>
