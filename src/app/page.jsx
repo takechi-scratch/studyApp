@@ -9,9 +9,10 @@ import { currentDatabaseID, changeDatabaseID } from "@/features/questionsData";
 // import Message from "@/components/message";
 import Link from "next/link";
 
+import { toast } from "sonner";
+
 export default function Home() {
     const [databaseID, setDatabaseID] = useState(currentDatabaseID);
-    const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
     useEffect(() => {
@@ -31,7 +32,9 @@ export default function Home() {
             }
             router.push("/blocks");
         } catch (error) {
-            setErrorMessage(error.message);
+            toast(error.message, {
+                style: { background: "#fecaca", color: "#000" },
+            })
         }
     };
 
@@ -58,11 +61,6 @@ export default function Home() {
                     </button>
                     <Link href="/make">問題を作成する</Link>
                 </div>
-                {errorMessage && (
-                    <div className="fixed top-4 right-4 bg-red-300 p-4 rounded shadow-lg">
-                        {errorMessage}
-                    </div>
-                )}
             </main>
         </div>
     );

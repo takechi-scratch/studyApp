@@ -1,6 +1,8 @@
 import "./globals.css";
 import Script from 'next/script';
 
+import { Toaster } from "@/components/ui/sonner";
+
 export const metadata = {
     title: "テスト対策アプリ",
     description: "現在作成中です",
@@ -34,6 +36,7 @@ export default function RootLayout({ children }) {
             </head>
             <body>
                 {children}
+                <Toaster/ >
             </body>
         </html>
     );

@@ -2,10 +2,10 @@
 
 import { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 import Header from "../../components/header";
 import { currentDatabaseID, fetchQuestions } from "@/features/questionsData";
-import Message from "@/components/message";
 
 const Questions = ({questions, isRandom, includesFeedback}) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -83,7 +83,6 @@ const Questions = ({questions, isRandom, includesFeedback}) => {
 }
 
 const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback, setQuestions, blockID}) => {
-    const [message, setMessage] = useState("");
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -93,7 +92,9 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
     const refresh = () => {
         fetchQuestions(currentDatabaseID, blockID, false).then((data) => {
             setQuestions(data);
-            setMessage("データを再読み込みしました！"); // 一度しか出てこないバグあり
+            toast("データを再読み込みしました！", {
+                style: { background: "#86efac", color: "#000" },
+            });
         });
     };
 
@@ -129,7 +130,6 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
                     </div>
                 )}
             </div>
-            {message && <Message text={message} className="bg-green-300" />}
         </div>
     );
 }
