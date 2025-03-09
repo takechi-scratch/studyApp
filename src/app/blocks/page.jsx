@@ -75,8 +75,9 @@ export default function Home() {
     const router = useRouter();
 
     const refresh = () => {
+        toast("読み込み中...");
         fetchBlockIndex(currentDatabaseID, false).then(() => {
-            toast("データを再読み込みしました！", {
+            toast("ブロックデータを更新しました！", {
                 style: { background: "#86efac", color: "#000" },
             });
         });

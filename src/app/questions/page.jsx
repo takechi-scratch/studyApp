@@ -90,9 +90,10 @@ const Settings = ({isRandom, setIsRandom, includesFeedback, setIncludesFeedback,
     };
 
     const refresh = () => {
+        toast("読み込み中...");
         fetchQuestions(currentDatabaseID, blockID, false).then((data) => {
             setQuestions(data);
-            toast("データを再読み込みしました！", {
+            toast("問題データを更新しました！", {
                 style: { background: "#86efac", color: "#000" },
             });
         });
