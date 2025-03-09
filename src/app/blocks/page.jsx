@@ -1,14 +1,16 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import Header from "../../components/header";
-import { currentDatabaseID, currentBlocks, fetchBlockIndex } from "@/features/questionsData";
+import { currentDatabaseID, fetchBlockIndex } from "@/features/questionsData";
+import { EyeIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 
 
 function Blocks() {
+    const [blocks, setBlocks] = useState(null);
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -25,10 +27,18 @@ function Blocks() {
         );
     }
 
-    if (currentBlocks.length === 0) {
-        return (
-            <p className="text-xl">問題がありません</p>
-        );
+    useEffect(() => {
+        fetchBlockIndex(currentDatabaseID).then((data) => {
+            setBlocks(data);
+        });
+    }, [currentDatabaseID]);
+
+    if (!blocks) {
+        return <p>読み込み中...</p>;
+    }
+
+    if (blocks.length === 0) {
+        return <p>問題ブロックがありません。</p>;
     }
 
     // descriptions: "授業で扱った文章の内容・文法の問題です。"
@@ -40,12 +50,20 @@ function Blocks() {
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-            {currentBlocks.map((block) => (
+            {blocks.map((block) => (
                 <button key={block.id} onClick={() => handleClick(block.id)} className="p-4 border border-gray-300 rounded-md text-left">
                     <h2 className="text-lg font-bold">{block.title}</h2>
                     <p>{block.descriptions}</p>
-                    <p>問題数: {block.questions}問</p>
-                    <p>閲覧数: {block.views}回</p>
+                    <div className="flex gap-4 mt-3">
+                        <div className="flex items-center">
+                            <Squares2X2Icon className="h-5 w-5 mr-1" />
+                            {block.questions}
+                        </div>
+                        <div className="flex items-center">
+                            <EyeIcon className="h-5 w-5 mr-1" />
+                            {block.views}
+                        </div>
+                    </div>
                 </button>
             ))}
         </div>

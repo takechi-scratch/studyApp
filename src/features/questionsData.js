@@ -1,5 +1,4 @@
 export let currentDatabaseID = "";
-export let currentBlocks = [];
 
 export const changeDatabaseID =　async (id) => {
     if (!isIdValid(id)) {
@@ -75,7 +74,6 @@ export const fetchBlockIndex = async (databaseID, useCache = true) => {
 
         // キャッシュが12時間以内の場合はキャッシュを返す
         if (Date.now() - rawData.timestamp < 12 * 3600 * 1000) {
-            currentBlocks = rawData.blocks;
             return rawData.blocks;
         }
     }
@@ -91,7 +89,6 @@ export const fetchBlockIndex = async (databaseID, useCache = true) => {
     // ローカルストレージに保存
     storage[gasID] = {timestamp: Date.now(), blocks: response};
     localStorage.setItem("blockIndex", JSON.stringify(storage));
-    currentBlocks = response;
 
     return response;
 };
